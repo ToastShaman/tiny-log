@@ -42,6 +42,7 @@ public class AsyncEvents implements Events {
                     Event event = source.poll(1, SECONDS);
                     if (event != null) sink.log(event);
                 } catch (InterruptedException ignore) {
+                    /* do nothing */
                 }
             }
         });
@@ -53,9 +54,9 @@ public class AsyncEvents implements Events {
             running.set(false);
             executor.shutdown();
             executor.awaitTermination(5, SECONDS);
-            return this;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignore) {
+            /* do nothing */
         }
+        return this;
     }
 }
