@@ -35,7 +35,7 @@ public class PrintingEvents implements Events {
 
         JSONObject envelope = new JSONObject();
         envelope.put("metadata", metadata);
-        envelope.put("payload", event.payload());
+        envelope.put("event", event.payload());
 
         writer.println(envelope);
     }

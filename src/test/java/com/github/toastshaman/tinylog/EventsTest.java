@@ -6,7 +6,6 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.Clock;
-import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Instant.EPOCH;
@@ -34,7 +33,7 @@ class EventsTest {
         events.log(event);
 
         String expectedStr = """
-                {"metadata":{"name":"My Event","category":"INFO","timestamp":"1970-01-01T00:00:00Z"},"payload":{"name":"Some Name","counter":1,"object":{"nested":2}}}""";
+                {"metadata":{"name":"My Event","category":"INFO","timestamp":"1970-01-01T00:00:00Z"},"event":{"name":"Some Name","counter":1,"object":{"nested":2}}}""";
 
         JSONAssert.assertEquals(expectedStr, output.toString(), true);
     }
