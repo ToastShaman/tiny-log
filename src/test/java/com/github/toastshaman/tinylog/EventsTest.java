@@ -13,27 +13,30 @@ import static java.time.ZoneOffset.UTC;
 
 class EventsTest {
 
+    private final Clock clock = Clock.fixed(EPOCH, UTC);
+
     @Test
     void structured_logging() {
-        Event event = Event.builder()
+        var event = Event.builder()
                 .name("My Event")
                 .category(Category.INFO)
                 .put("counter", 1)
-                .put("name", "Some Name")
                 .put("object", (it) -> it.put("nested", 2))
                 .build();
 
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        PrintStream stream = new PrintStream(output, true, UTF_8);
+        var output = new ByteArrayOutputStream();
+        var stream = new PrintStream(output, true, UTF_8);
+        var events = new PrintingEvents(stream).then(new PrintingEvents());
 
-        CompositeEvents events = new CompositeEvents(
-                new PrintingEvents(Clock.fixed(EPOCH, UTC), stream),
-                new PrintingEvents(Clock.systemUTC())
-        );
-        events.log(event);
+        StructuredLogs.AddTimestamp(clock)
+                .then(StructuredLogs.AddServiceName("API#1"))
+                .then(StructuredLogs.AddName())
+                .then(StructuredLogs.AddCategory())
+                .then(events)
+                .log(event);
 
-        String expectedStr = """
-                {"metadata":{"name":"My Event","category":"INFO","timestamp":"1970-01-01T00:00:00Z"},"event":{"name":"Some Name","counter":1,"object":{"nested":2}}}""";
+        var expectedStr = """
+                {"metadata":{"name":"My Event","category":"INFO","service":"API#1","timestamp":"1970-01-01T00:00:00Z"},"event":{"counter":1,"object":{"nested":2}}}""";
 
         JSONAssert.assertEquals(expectedStr, output.toString(), true);
     }

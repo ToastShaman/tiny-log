@@ -1,58 +1,16 @@
 package com.github.toastshaman.tinylog;
 
+import com.github.toastshaman.tinylog.SimpleEvent.EventBuilder;
 import org.json.JSONObject;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-
-public record Event(
-        String name,
-        Category category,
-        JSONObject payload
-) {
-
-    public static EventBuilder builder() {
-        return new EventBuilder();
+interface Event {
+    static EventBuilder builder() {
+        return SimpleEvent.builder();
     }
 
-    public static class EventBuilder {
-        private String name;
-        private Category category = Category.INFO;
-        private JSONObject payload = new JSONObject();
+    JSONObject toJson();
 
-        public EventBuilder name(String value) {
-            this.name = value;
-            return this;
-        }
+    String name();
 
-        public EventBuilder category(Category value) {
-            this.category = value;
-            return this;
-        }
-
-        public EventBuilder payload(JSONObject value) {
-            this.payload = value;
-            return this;
-        }
-
-        public EventBuilder put(String key, Object value) {
-            this.payload.putOnce(key, value);
-            return this;
-        }
-
-        public EventBuilder put(String key, Consumer<JSONObject> fn) {
-            JSONObject nested = new JSONObject();
-            fn.accept(nested);
-            this.payload.putOnce(key, nested);
-            return this;
-        }
-
-        public Event build() {
-            return new Event(
-                    Objects.requireNonNull(name),
-                    Objects.requireNonNull(category),
-                    Objects.requireNonNull(payload)
-            );
-        }
-    }
+    Category category();
 }
