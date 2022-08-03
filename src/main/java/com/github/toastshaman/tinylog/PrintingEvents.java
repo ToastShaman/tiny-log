@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import java.io.PrintStream;
 import java.time.Clock;
+import java.util.Objects;
 
 public class PrintingEvents implements Events {
 
@@ -15,12 +16,14 @@ public class PrintingEvents implements Events {
     }
 
     public PrintingEvents(Clock clock, PrintStream writer) {
-        this.clock = clock;
-        this.writer = writer;
+        this.clock = Objects.requireNonNull(clock);
+        this.writer = Objects.requireNonNull(writer);
     }
 
     @Override
     public void log(Event event) {
+        Objects.requireNonNull(event);
+
         JSONObject metadata = new JSONObject();
         metadata.put("timestamp", clock.instant().toString());
         metadata.put("name", event.name());

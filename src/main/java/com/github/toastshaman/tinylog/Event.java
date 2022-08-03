@@ -48,10 +48,11 @@ public record Event(
         }
 
         public Event build() {
-            Objects.requireNonNull(name);
-            Objects.requireNonNull(category);
-            Objects.requireNonNull(payload);
-            return new Event(name, category, payload);
+            return new Event(
+                    Objects.requireNonNull(name),
+                    Objects.requireNonNull(category),
+                    Objects.requireNonNull(payload)
+            );
         }
     }
 }

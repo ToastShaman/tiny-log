@@ -27,9 +27,10 @@ class EventsTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         PrintStream stream = new PrintStream(output, true, UTF_8);
 
-        CompositeEvents events = new CompositeEvents(List.of(
+        CompositeEvents events = new CompositeEvents(
                 new PrintingEvents(Clock.fixed(EPOCH, UTC), stream),
-                new PrintingEvents(Clock.systemUTC())));
+                new PrintingEvents(Clock.systemUTC())
+        );
         events.log(event);
 
         String expectedStr = """
