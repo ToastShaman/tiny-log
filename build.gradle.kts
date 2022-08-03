@@ -21,6 +21,8 @@ dependencies {
     testImplementation(Testing.junit.jupiter.api)
     testRuntimeOnly(Testing.junit.jupiter.engine)
     testImplementation("org.skyscreamer:jsonassert:_")
+    testImplementation("org.awaitility:awaitility:_")
+    testImplementation("com.google.truth:truth:_")
 }
 
 tasks.getByName<Test>("test") {

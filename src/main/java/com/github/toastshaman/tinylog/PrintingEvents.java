@@ -11,6 +11,10 @@ public class PrintingEvents implements Events {
     private final Clock clock;
     private final PrintStream writer;
 
+    public PrintingEvents() {
+        this(Clock.systemUTC(), System.out);
+    }
+
     public PrintingEvents(Clock clock) {
         this(clock, System.out);
     }
