@@ -3,7 +3,6 @@ package com.github.toastshaman.tinylog.events;
 import com.github.toastshaman.tinylog.Event;
 import com.github.toastshaman.tinylog.Events;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,7 +15,7 @@ public class CompositeEvents implements Events {
     }
 
     public CompositeEvents(Events... delegates) {
-        this(Arrays.stream(delegates).toList());
+        this(List.of(delegates));
     }
 
     @Override

@@ -5,19 +5,18 @@ import com.github.toastshaman.tinylog.Events;
 import com.github.toastshaman.tinylog.MetadataEvent;
 import com.github.toastshaman.tinylog.StructuredLogs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MetadataAwareEvents implements Events {
 
     private final List<Events> delegates;
     private final StructuredLogs structuredLogs;
 
-    public MetadataAwareEvents(StructuredLogs structuredLogs, Events... events) {
-        this.structuredLogs = Objects.requireNonNull(structuredLogs);
-        this.delegates = new ArrayList<>(Arrays.stream(Objects.requireNonNull(events)).toList());
+    public MetadataAwareEvents(StructuredLogs structuredLogs, Events events) {
+        Objects.requireNonNull(events);
+        Objects.requireNonNull(structuredLogs);
+        this.structuredLogs = structuredLogs;
+        this.delegates = Collections.synchronizedList(new ArrayList<>(List.of(events)));
     }
 
     @Override

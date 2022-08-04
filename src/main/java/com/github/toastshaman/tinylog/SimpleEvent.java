@@ -68,7 +68,7 @@ public record SimpleEvent(
             return new SimpleEvent(
                     Objects.requireNonNull(name),
                     Objects.requireNonNull(category),
-                    Objects.requireNonNull(payload)
+                    Objects.requireNonNull(Map.copyOf(payload))
             );
         }
     }

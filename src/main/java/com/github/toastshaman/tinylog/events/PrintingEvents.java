@@ -6,6 +6,9 @@ import com.github.toastshaman.tinylog.Events;
 import java.io.PrintStream;
 import java.util.Objects;
 
+/**
+ * Thread-safe printing of events to a {@link PrintStream}.
+ */
 public class PrintingEvents implements Events {
     private final PrintStream writer;
 
