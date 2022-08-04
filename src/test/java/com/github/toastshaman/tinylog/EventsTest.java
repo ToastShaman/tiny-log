@@ -1,5 +1,6 @@
 package com.github.toastshaman.tinylog;
 
+import com.github.toastshaman.tinylog.events.PrintingEvents;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -26,13 +27,13 @@ class EventsTest {
 
         var output = new ByteArrayOutputStream();
         var stream = new PrintStream(output, true, UTF_8);
-        var events = new PrintingEvents(stream).then(new PrintingEvents());
 
         StructuredLogs.AddTimestamp(clock)
                 .then(StructuredLogs.AddServiceName("API#1"))
                 .then(StructuredLogs.AddName())
                 .then(StructuredLogs.AddCategory())
-                .then(events)
+                .then(new PrintingEvents())
+                .then(new PrintingEvents(stream))
                 .log(event);
 
         var expectedStr = """

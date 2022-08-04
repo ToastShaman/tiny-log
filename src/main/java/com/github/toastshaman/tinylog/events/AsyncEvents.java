@@ -1,4 +1,7 @@
-package com.github.toastshaman.tinylog;
+package com.github.toastshaman.tinylog.events;
+
+import com.github.toastshaman.tinylog.Event;
+import com.github.toastshaman.tinylog.Events;
 
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
@@ -9,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class AsyncEvents implements Events {
 
     private final ExecutorService executor;

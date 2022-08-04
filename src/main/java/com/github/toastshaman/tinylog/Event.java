@@ -3,7 +3,7 @@ package com.github.toastshaman.tinylog;
 import com.github.toastshaman.tinylog.SimpleEvent.EventBuilder;
 import org.json.JSONObject;
 
-interface Event {
+public interface Event {
     static EventBuilder builder() {
         return SimpleEvent.builder();
     }

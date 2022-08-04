@@ -1,25 +1,25 @@
 package com.github.toastshaman.tinylog;
 
-import java.time.Clock;
-import java.util.Map;
-import java.util.stream.Stream;
+import com.github.toastshaman.tinylog.events.MetadataAwareEvents;
 
-import static java.util.stream.Collectors.toMap;
+import java.time.Clock;
+import java.util.HashMap;
+import java.util.Map;
 
 public interface StructuredLogs {
     Map<String, Object> apply(Event event);
 
     default StructuredLogs then(StructuredLogs fn) {
         return event -> {
-            var first = Map.copyOf(this.apply(event));
-            var second = Map.copyOf(fn.apply(event));
-            return Stream.concat(first.entrySet().stream(), second.entrySet().stream())
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+            var result = new HashMap<String, Object>();
+            result.putAll(apply(event));
+            result.putAll(fn.apply(event));
+            return Map.copyOf(result);
         };
     }
 
     default Events then(Events events) {
-        return event -> events.log(new MetadataEvent(this.apply(event), event));
+        return new MetadataAwareEvents(this, events);
     }
 
     static StructuredLogs AddTimestamp(Clock clock) {

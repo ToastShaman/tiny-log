@@ -1,4 +1,7 @@
-package com.github.toastshaman.tinylog;
+package com.github.toastshaman.tinylog.events;
+
+import com.github.toastshaman.tinylog.Event;
+import com.github.toastshaman.tinylog.Events;
 
 import java.io.PrintStream;
 import java.util.Objects;

@@ -1,5 +1,8 @@
 package com.github.toastshaman.tinylog;
 
+import com.github.toastshaman.tinylog.events.AsyncEvents;
+import com.github.toastshaman.tinylog.events.CapturingEvents;
+import com.github.toastshaman.tinylog.events.PrintingEvents;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -18,12 +21,13 @@ class AsyncEventsTest {
     @Test
     void logs_async() {
         var capturingEvents = new CapturingEvents();
-        var async = new AsyncEvents(new PrintingEvents().then(capturingEvents));
+        var async = new AsyncEvents(capturingEvents);
 
         var events = StructuredLogs.AddTimestamp(clock)
                 .then(StructuredLogs.AddServiceName("API#1"))
                 .then(StructuredLogs.AddName())
                 .then(StructuredLogs.AddCategory())
+                .then(new PrintingEvents())
                 .then(async);
 
         async.start();
