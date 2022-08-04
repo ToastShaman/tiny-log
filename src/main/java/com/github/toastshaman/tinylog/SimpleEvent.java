@@ -1,7 +1,5 @@
 package com.github.toastshaman.tinylog;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,8 +22,8 @@ public record SimpleEvent(
     }
 
     @Override
-    public JSONObject toJson() {
-        return new JSONObject(payload);
+    public Map<String, Object> toMap() {
+        return Map.copyOf(payload);
     }
 
     public static class EventBuilder {

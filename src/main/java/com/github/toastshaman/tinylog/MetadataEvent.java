@@ -1,7 +1,5 @@
 package com.github.toastshaman.tinylog;
 
-import org.json.JSONObject;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,14 +14,8 @@ public record MetadataEvent(
     }
 
     @Override
-    public JSONObject toJson() {
-        JSONObject metadata = new JSONObject(metadata());
-
-        JSONObject envelope = new JSONObject();
-        envelope.put("metadata", metadata);
-        envelope.put("event", event.toJson());
-
-        return envelope;
+    public Map<String, Object> toMap() {
+        return Map.of("metadata", metadata, "event", event.toMap());
     }
 
     @Override

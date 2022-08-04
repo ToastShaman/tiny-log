@@ -2,7 +2,6 @@ package com.github.toastshaman.tinylog;
 
 import com.github.toastshaman.tinylog.events.CapturingEvents;
 import com.github.toastshaman.tinylog.events.PrintingEvents;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -81,10 +80,8 @@ class EventsTest {
         }
 
         @Override
-        public JSONObject toJson() {
-            JSONObject payload = new JSONObject();
-            payload.putOnce("counter", 1);
-            return payload;
+        public Map<String, Object> toMap() {
+            return Map.of("counter", 1);
         }
     }
 

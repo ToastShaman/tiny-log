@@ -2,6 +2,7 @@ package com.github.toastshaman.tinylog.events;
 
 import com.github.toastshaman.tinylog.Event;
 import com.github.toastshaman.tinylog.Events;
+import org.json.JSONObject;
 
 import java.io.PrintStream;
 import java.util.Objects;
@@ -22,6 +23,6 @@ public class PrintingEvents implements Events {
 
     @Override
     public void log(Event event) {
-        writer.println(event.toJson());
+        writer.println(new JSONObject(event.toMap()));
     }
 }

@@ -28,10 +28,8 @@ class MyCustomEvent extends AbstractEvent {
     }
 
     @Override
-    public JSONObject toJson() {
-        JSONObject payload = new JSONObject();
-        payload.putOnce("counter", 1);
-        return payload;
+    public Map<String, Object> toMap() {
+        return Map.of("counter", 1);
     }
 }
 
