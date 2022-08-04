@@ -32,8 +32,8 @@ public class AsyncEvents implements Events {
     public AsyncEvents(Events events,
                        ExecutorService executor,
                        int capacity) {
-        this.sink = events;
-        this.executor = executor;
+        this.sink = Objects.requireNonNull(events);
+        this.executor = Objects.requireNonNull(executor);
         this.source = new LinkedBlockingDeque<>(capacity);
     }
 

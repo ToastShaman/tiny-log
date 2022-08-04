@@ -13,6 +13,12 @@ public record SimpleEvent(
         Map<String, Object> payload
 ) implements Event {
 
+    public SimpleEvent {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(category);
+        Objects.requireNonNull(payload);
+    }
+
     public static EventBuilder builder() {
         return new EventBuilder();
     }
@@ -65,11 +71,7 @@ public record SimpleEvent(
         }
 
         public SimpleEvent build() {
-            return new SimpleEvent(
-                    Objects.requireNonNull(name),
-                    Objects.requireNonNull(category),
-                    Objects.requireNonNull(Map.copyOf(payload))
-            );
+            return new SimpleEvent(name, category, Map.copyOf(payload));
         }
     }
 }

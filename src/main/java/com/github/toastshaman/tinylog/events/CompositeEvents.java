@@ -11,15 +11,16 @@ public class CompositeEvents implements Events {
     private final List<Events> delegates;
 
     public CompositeEvents(List<Events> delegates) {
-        this.delegates = Objects.requireNonNull(delegates);
+        this.delegates = List.copyOf(Objects.requireNonNull(delegates));
     }
 
     public CompositeEvents(Events... delegates) {
-        this(List.of(delegates));
+        this(List.of(Objects.requireNonNull(delegates)));
     }
 
     @Override
     public void log(Event event) {
-        delegates.forEach(it -> it.log(Objects.requireNonNull(event)));
+        Objects.requireNonNull(event);
+        delegates.forEach(it -> it.log(event));
     }
 }

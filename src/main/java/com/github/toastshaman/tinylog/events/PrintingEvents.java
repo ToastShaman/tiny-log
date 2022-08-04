@@ -22,6 +22,6 @@ public class PrintingEvents implements Events {
 
     @Override
     public void log(Event event) {
-        writer.println(Objects.requireNonNull(event).toJson());
+        writer.println(event.toJson());
     }
 }
