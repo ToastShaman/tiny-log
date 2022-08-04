@@ -25,8 +25,8 @@ public class AsyncEvents implements Events {
         this(events, Integer.MAX_VALUE);
     }
 
-    public AsyncEvents(Events events, int maxValue) {
-        this(events, Executors.newSingleThreadExecutor(), maxValue);
+    public AsyncEvents(Events events, int capacity) {
+        this(events, Executors.newSingleThreadExecutor(), capacity);
     }
 
     public AsyncEvents(Events events,
