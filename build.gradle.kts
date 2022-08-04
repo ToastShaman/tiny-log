@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation("org.json:json:_")
+    implementation("org.slf4j:slf4j-api:_")
 
     testImplementation(Testing.junit.jupiter.api)
     testRuntimeOnly(Testing.junit.jupiter.engine)

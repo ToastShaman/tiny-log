@@ -66,4 +66,12 @@ public class AsyncEvents implements Events {
         }
         return this;
     }
+
+    public int queueSize() {
+        return source.size();
+    }
+
+    public boolean isRunning() {
+        return running.get();
+    }
 }
