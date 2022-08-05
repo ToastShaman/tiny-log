@@ -2,16 +2,15 @@ package com.github.toastshaman.tinylog;
 
 import com.github.toastshaman.tinylog.events.CapturingEvents;
 import com.github.toastshaman.tinylog.events.PrintingEvents;
+import com.github.toastshaman.tinylog.events.WritingEvents;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.StringWriter;
 import java.time.Clock;
 import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Instant.EPOCH;
 import static java.time.ZoneOffset.UTC;
 
@@ -86,9 +85,10 @@ class EventsTest {
     }
 
     static class AssertEvent implements Events {
-        private final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        private final PrintStream stream = new PrintStream(output, true, UTF_8);
-        private final PrintingEvents events = new PrintingEvents(stream);
+        private final StringWriter writer = new StringWriter();
+
+        private final WritingEvents events = new WritingEvents(writer);
+
         private final String expected;
 
         public AssertEvent(String expected) {
@@ -98,7 +98,7 @@ class EventsTest {
         @Override
         public void log(Event event) {
             events.log(event);
-            JSONAssert.assertEquals(expected, output.toString(), true);
+            JSONAssert.assertEquals(expected, writer.toString(), true);
         }
     }
 }
