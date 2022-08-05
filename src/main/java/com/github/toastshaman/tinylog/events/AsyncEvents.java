@@ -12,11 +12,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsyncEvents implements Events {
 
+    private static final Integer DEFAULT_QUEUE_SIZE = 500;
+
     private final BlockingQueue<Event> source;
     private final Worker worker;
 
     public AsyncEvents(Events events) {
-        this(events, Integer.MAX_VALUE);
+        this(events, DEFAULT_QUEUE_SIZE);
     }
 
     public AsyncEvents(Events sink, int capacity) {
