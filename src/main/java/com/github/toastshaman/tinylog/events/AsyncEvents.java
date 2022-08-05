@@ -7,71 +7,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class AsyncEvents implements Events {
 
-    private final ExecutorService executor;
     private final BlockingQueue<Event> source;
-    private final Events sink;
-
-    private final AtomicBoolean running = new AtomicBoolean(true);
-    private final int capacity;
+    private final Worker worker;
 
     public AsyncEvents(Events events) {
         this(events, Integer.MAX_VALUE);
     }
 
-    public AsyncEvents(Events events, int capacity) {
-        this(events, Executors.newSingleThreadExecutor(), capacity);
-    }
-
-    public AsyncEvents(Events events,
-                       ExecutorService executor,
-                       int capacity) {
-        this.capacity = capacity;
-        this.sink = Objects.requireNonNull(events);
-        this.executor = Objects.requireNonNull(executor);
+    public AsyncEvents(Events sink, int capacity) {
         this.source = new LinkedBlockingDeque<>(capacity);
+        this.worker = new Worker(source, Objects.requireNonNull(sink));
     }
 
     @Override
     public void log(Event event) {
-        source.offer(Objects.requireNonNull(event));
+        boolean ok = source.offer(Objects.requireNonNull(event));
+        if (!ok) {
+            System.err.println("Failed to queue event. Maximum queue capacity reached.");
+        }
     }
 
-    public AsyncEvents start() {
-        executor.submit(() -> {
-            while (running.get()) {
-                try {
-                    Event event = source.poll(1, SECONDS);
-                    if (event != null) {
-                        List<Event> elements = new ArrayList<>(List.of(event));
-                        source.drainTo(elements);
-                        elements.forEach(sink::log);
-                    }
-                } catch (Exception ignore) {
-                    /* do nothing */
-                }
-            }
-        });
+    public synchronized AsyncEvents start() {
+        worker.start();
         return this;
     }
 
-    public AsyncEvents stop() {
-        try {
-            running.set(false);
-            executor.shutdown();
-            executor.awaitTermination(5, SECONDS);
-        } catch (Exception ignore) {
-            /* do nothing */
+    public synchronized AsyncEvents stop() {
+        if (!worker.isRunning()) {
+            return this;
         }
+
+        worker.halt();
+        worker.interrupt();
         return this;
     }
 
@@ -79,11 +51,53 @@ public class AsyncEvents implements Events {
         return source.size();
     }
 
-    public boolean isRunning() {
-        return running.get();
+    public int remainingCapacity() {
+        return source.remainingCapacity();
     }
 
-    public int capacity() {
-        return capacity;
+    private static class Worker extends Thread {
+        private final AtomicBoolean running = new AtomicBoolean(false);
+
+        public final BlockingQueue<Event> source;
+        public final Events sink;
+
+        public Worker(BlockingQueue<Event> source, Events sink) {
+            setDaemon(true);
+            this.source = source;
+            this.sink = sink;
+        }
+
+        @Override
+        public synchronized void start() {
+            running.set(true);
+            super.start();
+        }
+
+        public synchronized void halt() {
+            running.set(false);
+        }
+
+        public boolean isRunning() {
+            return running.get();
+        }
+
+        @Override
+        public void run() {
+            while (running.get()) {
+                try {
+                    Event event = source.take();
+                    List<Event> elements = new ArrayList<>(List.of(event));
+                    source.drainTo(elements);
+                    elements.forEach(sink::log);
+                } catch (InterruptedException e) {
+                    // exit if interrupted
+                    break;
+                }
+            }
+
+            // flush remaining messages
+            source.forEach(sink::log);
+            source.clear();
+        }
     }
 }
